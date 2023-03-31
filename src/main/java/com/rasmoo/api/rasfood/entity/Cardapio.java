@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,9 @@ public class Cardapio {
 
     @Column(name = "data_de_registro")
     private LocalDateTime dataDeRegistro = LocalDateTime.now();
+
+    @Lob
+    private byte[] img;
 
     public Cardapio(String nome, String descricao, Boolean disponivel, BigDecimal valor, Categoria categoria) {
         this.nome = nome;
