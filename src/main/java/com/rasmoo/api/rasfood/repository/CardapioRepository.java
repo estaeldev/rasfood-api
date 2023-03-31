@@ -2,7 +2,10 @@ package com.rasmoo.api.rasfood.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,11 +16,11 @@ import com.rasmoo.api.rasfood.repository.projection.CardapioProjection;
 
 import jakarta.transaction.Transactional;
 
-public interface CardapioRepository extends JpaRepository<Cardapio, Integer>  {
+public interface CardapioRepository extends JpaRepository<Cardapio, Integer>, JpaSpecificationExecutor<Cardapio>  {
 
     @Query("SELECT new com.rasmoo.api.rasfood.dto.CardapioDto(c.nome, c.descricao, c.valor, c.categoria.nome) " +
     "FROM Cardapio c WHERE c.nome LIKE %?1% AND c.disponivel = TRUE")
-    List<CardapioDto> findAllByNome(@Param("nome") final String nome);
+    Page<CardapioDto> findAllByNome(@Param("nome") final String nome, final Pageable pageable);
 
     @Query(value = "SELECT * FROM cardapios c WHERE c.categoria_id = ?1 AND c.disponivel = TRUE", nativeQuery = true)
     List<Cardapio> findAllByCategoria(@Param("id") final Integer categoriaId);
@@ -26,7 +29,7 @@ public interface CardapioRepository extends JpaRepository<Cardapio, Integer>  {
     "FROM cardapios c " +
     "INNER JOIN categorias cat ON c.categoria_id = cat.id " +
     "WHERE c.categoria_id = ?1 AND c.disponivel = TRUE", nativeQuery = true)
-    List<CardapioProjection> findAllByCategoriaNativeQuery(@Param("id") final Integer categoriaId);
+    Page<CardapioProjection> findAllByCategoriaNativeQuery(@Param("id") final Integer categoriaId, final Pageable pageable);
 
     @Transactional
     @Modifying
